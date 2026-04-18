@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Isla del Taco – Calle 4</title>
+<meta property="og:title" content="🌮 Isla del Taco – Calle 4">
+<meta property="og:description" content="Haz tu pedido de tacos, bebidas y licores. Lo confirmamos por WhatsApp.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f0e8;color:#1a1a1a;min-height:100vh}
+.wrap{max-width:480px;margin:0 auto;background:#fff;min-height:100vh;padding-bottom:130px;box-shadow:0 0 30px rgba(0,0,0,.08)}
+.header{text-align:center;padding:24px 16px 16px;background:linear-gradient(135deg,#7f1d1d,#b91c1c);color:#fff}
+.logo-ring{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);margin-bottom:10px}
+.logo-ring span{font-size:26px}
+.brand{font-size:22px;font-weight:700;letter-spacing:.5px}
+.sub{font-size:13px;opacity:.85;margin-top:4px}
+.tabs{display:flex;background:#fff;border-bottom:2px solid #f0ebe0;position:sticky;top:0;z-index:10}
+.tab{flex:1;padding:12px 8px;font-size:13px;font-weight:600;text-align:center;cursor:pointer;color:#888;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;background:#fff}
+.tab.active{color:#b91c1c;border-bottom-color:#b91c1c}
+.section{padding:8px 12px}
+.sec-title{font-size:11px;font-weight:700;color:#b91c1c;text-transform:uppercase;letter-spacing:.08em;padding:14px 4px 6px;border-bottom:1px solid #f0ebe0;margin-bottom:4px}
+.item{display:flex;align-items:center;padding:11px 4px;border-bottom:1px solid #f9f5ee}
+.item:last-child{border-bottom:none}
+.item-info{flex:1}
+.item-name{font-size:15px;font-weight:600;color:#1a1a1a}
+.item-price{font-size:14px;font-weight:700;color:#b91c1c;margin-right:12px;min-width:40px;text-align:right}
+.qty-ctrl{display:flex;align-items:center;gap:8px}
+.qty-btn{width:30px;height:30px;border-radius:50%;border:1.5px solid #ddd;background:#fff;cursor:pointer;font-size:18px;color:#333;display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1}
+.qty-btn:hover{background:#fef2f2;border-color:#b91c1c;color:#b91c1c}
+.qty-num{font-size:15px;font-weight:700;min-width:20px;text-align:center;color:#1a1a1a}
+.cart-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;border-top:1px solid #e5e0d5;padding:12px 16px 20px;box-shadow:0 -4px 20px rgba(0,0,0,.1)}
+.cart-summary{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cart-count{font-size:13px;color:#888}
+.cart-total{font-size:17px;font-weight:700;color:#1a1a1a}
+.wa-btn{width:100%;padding:14px;background:#16a34a;color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s;letter-spacing:.2px}
+.wa-btn:hover{background:#15803d;transform:translateY(-1px)}
+.wa-btn:active{transform:translateY(0)}
+.wa-btn:disabled{background:#d1d5db;color:#9ca3af;cursor:default;transform:none}
+.wa-icon{width:22px;height:22px;fill:#fff;flex-shrink:0}
+.hidden{display:none}
+@media(max-width:480px){.wrap{box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="logo-ring"><span>🌮</span></div>
+    <div class="brand">Isla del Taco · Calle 4</div>
+    <div class="sub">Elige tus productos y envía tu pedido por WhatsApp</div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('tacos',this)">🌮 Tacos</div>
+    <div class="tab" onclick="showTab('bebidas',this)">🍹 Bebidas</div>
+    <div class="tab" onclick="showTab('licores',this)">🥃 Licores</div>
+  </div>
+
+  <div id="tacos" class="section">
+    <div class="sec-title">Tacos de</div>
+    <div id="list-tacos"></div>
+  </div>
+
+  <div id="bebidas" class="section hidden">
+    <div class="sec-title">Tequila</div>
+    <div id="list-tequila"></div>
+    <div class="sec-title">Ron</div>
+    <div id="list-ron"></div>
+    <div class="sec-title">Whisky</div>
+    <div id="list-whisky"></div>
+    <div class="sec-title">Cerveza</div>
+    <div id="list-cerveza"></div>
+    <div class="sec-title">Refrescos</div>
+    <div id="list-refrescos"></div>
+  </div>
+
+  <div id="licores" class="section hidden">
+    <div class="sec-title">Licores por copa</div>
+    <div id="list-licores"></div>
+  </div>
+</div>
+
+<div class="cart-bar">
+  <div class="cart-summary">
+    <span class="cart-count" id="cart-count">Carrito vacío</span>
+    <span class="cart-total" id="cart-total"></span>
+  </div>
+  <button class="wa-btn" id="wa-btn" disabled onclick="sendWhatsApp()">
+    <svg class="wa-icon" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    Enviar pedido por WhatsApp
+  </button>
+</div>
+
+<script>
+const PHONE = "529983197450";
+const cart = {};
+
+const menu = {
+  tacos:[
+    {id:"suadero",name:"Suadero",price:23},
+    {id:"bistec",name:"Bistec",price:23},
+    {id:"longaniza",name:"Longaniza",price:23},
+    {id:"tripa",name:"Tripa",price:28},
+    {id:"buche",name:"Buche",price:25}
+  ],
+  tequila:[
+    {id:"ranch_water",name:"Ranch Water",price:119},
+    {id:"paloma",name:"Paloma ★",price:136},
+    {id:"margarita",name:"Margarita ★",price:136},
+    {id:"tequila_sunrise",name:"Tequila Sunrise",price:130},
+    {id:"charro_negro",name:"Charro Negro",price:136},
+    {id:"cantarito",name:"Cantarito ★",price:160}
+  ],
+  ron:[
+    {id:"mojito",name:"Mojito ★",price:136},
+    {id:"pina_colada",name:"Piña Colada",price:160},
+    {id:"mai_tai",name:"Mai Tai",price:160},
+    {id:"cuba_libre",name:"Cuba Libre",price:119},
+    {id:"daiquiri",name:"Daiquiri",price:136},
+    {id:"blue_hawaii",name:"Blue Hawaii",price:160}
+  ],
+  whisky:[
+    {id:"gold_rush",name:"Gold Rush",price:136},
+    {id:"neat_rocks",name:"Neat On The Rocks",price:160},
+    {id:"highball",name:"Whisky Highball",price:140},
+    {id:"whisky_sour",name:"Whisky Sour",price:160},
+    {id:"old_fashioned",name:"Old Fashioned",price:180}
+  ],
+  cerveza:[
+    {id:"xx_lager",name:"XX Lager",price:50},
+    {id:"sol",name:"Sol",price:50},
+    {id:"indio",name:"Indio",price:50},
+    {id:"tecate_light",name:"Tecate Light",price:50}
+  ],
+  refrescos:[
+    {id:"coca",name:"Coca-Cola",price:40},
+    {id:"coca_light",name:"Coca-Cola Light",price:40},
+    {id:"fanta",name:"Fanta",price:40},
+    {id:"sprite",name:"Sprite",price:40},
+    {id:"limonada",name:"Limonada",price:40}
+  ],
+  licores:[
+    {id:"jose_cuervo",name:"Jose Cuervo",price:110},
+    {id:"tradicional",name:"Tradicional",price:130},
+    {id:"centenario",name:"Centenario",price:130},
+    {id:"patron_blanco",name:"Patrón Blanco",price:150},
+    {id:"don_julio_blanco",name:"Don Julio Blanco",price:150},
+    {id:"don_julio_reposado",name:"Don Julio Reposado",price:150},
+    {id:"don_julio_70",name:"Don Julio 70",price:170},
+    {id:"hornito",name:"Hornito",price:120},
+    {id:"jim_beam",name:"Jim Beam",price:150},
+    {id:"jack_daniels",name:"Jack Daniel's",price:150},
+    {id:"black_white",name:"Black & White",price:100},
+    {id:"jameson",name:"Jameson",price:150},
+    {id:"red_label",name:"Red Label",price:130},
+    {id:"black_label",name:"Black Label",price:210},
+    {id:"crown_royal",name:"Crown Royal",price:210},
+    {id:"buchanas",name:"Buchana's",price:210},
+    {id:"bombay",name:"Bombay",price:130},
+    {id:"tanqueray",name:"Tanqueray",price:130},
+    {id:"bacardi_blanco",name:"Bacardi Blanco",price:100},
+    {id:"bacardi_anejo",name:"Bacardi Añejo",price:110},
+    {id:"malibu",name:"Malibu",price:110},
+    {id:"matusalen",name:"Matusalen",price:110},
+    {id:"captain_morgan",name:"Captain Morgan",price:110},
+    {id:"zacapa",name:"Zacapa",price:210},
+    {id:"stoli_vodka",name:"Stoli Vodka",price:130},
+    {id:"titos",name:"Tito's",price:140},
+    {id:"sotol",name:"Sotol",price:130},
+    {id:"licor43",name:"Licor 43",price:120}
+  ]
+};
+
+function renderList(listId, items){
+  const el = document.getElementById("list-"+listId);
+  el.innerHTML = items.map(item=>`
+    <div class="item">
+      <div class="item-info"><div class="item-name">${item.name}</div></div>
+      <div class="item-price">$${item.price}</div>
+      <div class="qty-ctrl">
+        <button class="qty-btn" onclick="change('${item.id}',${item.price},'${item.name}',-1)">−</button>
+        <span class="qty-num" id="q-${item.id}">0</span>
+        <button class="qty-btn" onclick="change('${item.id}',${item.price},'${item.name}',1)">+</button>
+      </div>
+    </div>`).join("");
+}
+
+Object.keys(menu).forEach(k=>renderList(k,menu[k]));
+
+function change(id,price,name,delta){
+  if(!cart[id]) cart[id]={name,price,qty:0};
+  cart[id].qty=Math.max(0,cart[id].qty+delta);
+  if(cart[id].qty===0) delete cart[id];
+  const el=document.getElementById("q-"+id);
+  if(el) el.textContent=cart[id]?.qty??0;
+  updateCart();
+}
+
+function updateCart(){
+  const ids=Object.keys(cart);
+  const total=ids.reduce((s,k)=>s+cart[k].price*cart[k].qty,0);
+  const count=ids.reduce((s,k)=>s+cart[k].qty,0);
+  const btn=document.getElementById("wa-btn");
+  document.getElementById("cart-count").textContent=count===0?"Carrito vacío":count+(count===1?" producto":" productos");
+  document.getElementById("cart-total").textContent=count===0?"":"$"+total.toLocaleString("es-MX");
+  btn.disabled=count===0;
+}
+
+function showTab(id,el){
+  ["tacos","bebidas","licores"].forEach(t=>{
+    document.getElementById(t).classList.toggle("hidden",t!==id);
+  });
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  el.classList.add("active");
+}
+
+function sendWhatsApp(){
+  const ids=Object.keys(cart);
+  if(!ids.length) return;
+  let msg="🌮 *Pedido – Isla del Taco Calle 4*\n\n";
+  let total=0;
+  ids.forEach(k=>{
+    const {name,price,qty}=cart[k];
+    msg+=`• ${name} x${qty} — $${(price*qty).toLocaleString("es-MX")}\n`;
+    total+=price*qty;
+  });
+  msg+=`\n*Total: $${total.toLocaleString("es-MX")} MXN*\n\n¡Gracias! 😊`;
+  window.open(`https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`,"_blank");
+}
+</script>
+</body>
+</html>
